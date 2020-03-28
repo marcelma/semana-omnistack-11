@@ -4,6 +4,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
+    "localhost": "expo start --host localhost",
+    "tunnel": "expo start --host tunnel",
     "web": "expo start --web",
     "eject": "expo eject"
   },

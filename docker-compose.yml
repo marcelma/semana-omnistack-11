@@ -1,0 +1,106 @@
+version: '3.4'
+services:
+  backend:
+    # Makefile fills PROJECT_NAME to current directory name.
+    # add UID to allow multiple users run this in parallel
+    container_name: ${PROJECT_NAME}-backend_${HOST_UID:-4000}
+    hostname: ${PROJECT_NAME}-backend
+    # These variables are passed into the container.
+    environment:
+      - UID=${HOST_UID:-4000}
+    # Run with user priviliges by default.
+    user: ${HOST_USER:-nodummy}
+    image: ${PROJECT_NAME}-backend:${HOST_USER:-nodummy}
+    build:
+      context: ./backend
+      # Build for current user.
+      target: user
+      dockerfile: Dockerfile
+      # These variables are passed to Dockerfile.
+      args:
+        - HOST_UID=${HOST_UID:-4000}
+        - HOST_USER=${HOST_USER:-nodummy}
+    networks:
+      - omnistack
+    ports:
+      - 3333:3333
+    # Run container as a service.
+    command: ["npm", "start"]
+
+    # Copy current (git-) project into container.
+    volumes:
+      - ${PWD:-.}/backend:/home/${HOST_USER}
+      - /home/${HOST_USER}/node_modules
+
+  frontend:
+    # Makefile fills PROJECT_NAME to current directory name.
+    # add UID to allow multiple users run this in parallel
+    container_name: ${PROJECT_NAME}-frontend_${HOST_UID:-4000}
+    hostname: ${PROJECT_NAME}-frontend
+    # These variables are passed into the container.
+    environment:
+      - UID=${HOST_UID:-4000}
+    # Run with user priviliges by default.
+    user: ${HOST_USER:-nodummy}
+    image: ${PROJECT_NAME}-frontend:${HOST_USER:-nodummy}
+    build:
+      context: ./frontend
+      # Build for current user.
+      target: user
+      dockerfile: Dockerfile
+      # These variables are passed to Dockerfile.
+      args:
+        - HOST_UID=${HOST_UID:-4000}
+        - HOST_USER=${HOST_USER:-nodummy}
+    stdin_open: true
+    networks:
+      - omnistack
+    ports:
+      - 3000:3000
+    # Run container as a service.
+    command: ["npm", "start"]
+
+    # Copy current (git-) project into container.
+    volumes:
+      - ${PWD:-.}/frontend:/home/${HOST_USER}
+      - /home/${HOST_USER}/node_modules
+
+  mobile:
+    # Makefile fills PROJECT_NAME to current directory name.
+    # add UID to allow multiple users run this in parallel
+    container_name: ${PROJECT_NAME}-mobile_${HOST_UID:-4000}
+    hostname: ${PROJECT_NAME}-mobile
+    # These variables are passed into the container.
+    environment:
+      - UID=${HOST_UID:-4000}
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+
+    # Run with user priviliges by default.
+    user: ${HOST_USER:-nodummy}
+    image: ${PROJECT_NAME}-mobile:${HOST_USER:-nodummy}
+    build:
+      context: ./mobile
+      # Build for current user.
+      dockerfile: Dockerfile
+      # These variables are passed to Dockerfile.
+      args:
+        - HOST_UID=${HOST_UID:-4000}
+        - HOST_USER=${HOST_USER:-nodummy}
+    stdin_open: true
+    networks:
+      - omnistack
+    ports:
+      - 19000:19000
+      - 19001:19001
+      - 19002:19002
+    # Run container as a service.
+    command: ["npm", "run", "tunnel"]
+
+    # Copy current (git-) project into container.
+    volumes:
+      - ${PWD:-.}/mobile:/home/${HOST_USER}
+      - /home/${HOST_USER}/node_modules
+
+networks:
+  omnistack:
+    external: true
