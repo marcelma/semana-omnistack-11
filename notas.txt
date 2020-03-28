@@ -1,0 +1,15 @@
+buscar: 
+
+back: 
+heroku
+digital ocean
+
+front:
+netlify
+
+app:
+gerando apk expo
+
+auth:
+JWT
+Styled Components
