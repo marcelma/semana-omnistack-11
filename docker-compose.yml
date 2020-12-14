@@ -94,7 +94,7 @@ services:
       - 19001:19001
       - 19002:19002
     # Run container as a service.
-    command: ["npm", "run", "tunnel"]
+    command: ["npm", "start"]
 
     # Copy current (git-) project into container.
     volumes:

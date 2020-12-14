@@ -29,9 +29,16 @@
  * Query Builder: table('users').select('*').where()
  */
 
+// web framework
 const express = require('express');
+
+// cors
 const cors = require('cors');
+
+// validation
 const { errors } = require('celebrate');
+
+// rotas
 const routes = require('./routes');
 
 const app = express();
